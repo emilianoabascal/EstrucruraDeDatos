@@ -1,72 +1,112 @@
+//Por Emiliano Abascal Gurria
 #include <iostream>
+#ifndef Arbol_HPP
+#define Arbol_HPP
 using namespace std;
+int cont = 0;
 
-class NodoArbol{
+class nodo {
 	private:
-		
-		NodoArbol *derecho;
-		NodoArbol* izquierdo;
-	public:
 		int dato;
-		NodoArbol();
-		int RegresaInfo();
-		friend class Arbol;
-};
-class Arbol{
-	public:
-		Arbol();
-		void crearArbol(NodoArbol *Apunt);
-		NodoArbol *RegresaRaiz();
-		void ImprimeIzquierda(NodoArbol *Apunt);
+		nodo *hijoIzquierdo;
+		nodo *hijoDerecho;
 		
-	private:
-		NodoArbol *raiz;
+	public:
+		nodo();
+		int RegresaDato();
+		friend class Arbol;
 		
 };
 
-NodoArbol::NodoArbol(){
-	derecho = NULL;
-	izquierdo = NULL;
+nodo::nodo(){
+	hijoDerecho = NULL ;
+	hijoIzquierdo =  NULL;
 }
 
-int NodoArbol::RegresaInfo(){
+int nodo::RegresaDato(){
 	return dato;
 }
+
+class Arbol{
+	private:
+		nodo *raiz;
+	public:
+		Arbol();
+		void CrearArbol(nodo *);
+		void Preorden(nodo *);
+		void Inorden(nodo *);
+		void Postorden(nodo *);
+		nodo *RegresaRaiz();
+};
 
 Arbol::Arbol(){
 	raiz = NULL;
 }
 
-
-
-void Arbol:: crearArbol(NodoArbol *Apunt){
-	char Resp;
-	Apunt = new NodoArbol;
-	cout << "ingrese la informacion a almacenar";
-	cin >> Apunt->dato;
-	cout << Apunt -> dato << " Tiene hijo izquierdo?(S/N): ";
-	cin >> Resp;
-	
-	if (Resp == 's'){
-		crearArbol(Apunt->izquierdo);
-		Apunt -> izquierdo = raiz;
+void Arbol::Preorden(nodo *pointer){
+	if (pointer){
+		cout<<pointer->dato<<" ";
+		Preorden(pointer->hijoIzquierdo);
+		Preorden(pointer->hijoDerecho);
 	}
-	cout << Apunt -> dato << " Tiene hijo derecho?(S/N): ";
-	cin >> Resp;
-	if (Resp == 's'){
-		crearArbol(Apunt -> derecho);
-		Apunt -> derecho = raiz;
+}
+void Arbol::Inorden(nodo *pointer){
+	if (pointer){
+		Inorden(pointer->hijoIzquierdo);
+		cout<<pointer->dato<<" ";
+		Inorden(pointer->hijoDerecho);
 	}
-	raiz = Apunt;
-	cout << Apunt -> dato;
+}
+void Arbol::Postorden(nodo *pointer){
+	if (pointer){
+		Postorden(pointer->hijoIzquierdo);
+		Postorden(pointer->hijoDerecho);
+		cout<<pointer->dato<<" ";
+	}
 }
 
-void Arbol::ImprimeIzquierda(NodoArbol *Apunt){
-	if(Apunt){
-		if (Apunt -> izquierdo) {
-			cout << Apunt -> izquierdo ->dato;
-			ImprimeIzquierda(Apunt -> izquierdo);
+void Arbol::CrearArbol(nodo *pointer){
+	char r;
+	char r2;
+	pointer = new nodo;
+	if (cont == 0){
+		cout<<"¿Cuál es el valor de la raíz?: ";
+		cin>>pointer->dato;
+		cont = 1;
+		cout<<"\n¿"<<pointer->dato<<" Tiene un hijo izquierdo (S/N)?: ";
+		cin >> r;
+		if(r == 's' || r == 'S'){
+			CrearArbol(pointer->hijoIzquierdo);
+			pointer->hijoIzquierdo=raiz;
 		}
-		ImprimeIzquierda(Apunt->derecho);
+		cout<<"\n¿"<<pointer->dato<<" Tiene un hijo Derecho (S/N): ";
+		cin>>r2;
+		if(r2 == 's' || r2 == 'S'){
+			CrearArbol(pointer -> hijoDerecho);
+			pointer -> hijoDerecho = raiz;
+		}
+	}else{
+		cout<<"¿Cual es el valor de este hijo?: ";
+		cin>>pointer->dato;
+		cout<<"\n¿"<<pointer->dato<<" Tiene hijo izquierdo (S/N)?: ";
+		cin >> r;
+		if(r == 's' || r == 'S'){
+			CrearArbol(pointer->hijoIzquierdo);
+			pointer->hijoIzquierdo=raiz;
+		}
+		cout<<"\n¿"<<pointer->dato<<" Tiene hijo Derecho (S/N): ";
+		cin>>r2;
+		if(r2 == 's' || r2 == 'S'){
+			CrearArbol(pointer -> hijoDerecho);
+			pointer -> hijoDerecho = raiz;
+		}
 	}
+	 
+	raiz = pointer;
+	
 }
+
+nodo *Arbol::RegresaRaiz(){
+	return raiz;
+}
+#endif
